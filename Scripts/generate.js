@@ -24,7 +24,7 @@ It should:
 - Be well commented for integration into MVVM (i.e. used by a PermissionsViewModel).
 `
   }
-  // Future entries go here for ActivityMonitor.swift, etc.
+  // Add more entries here for other Swift modules as you go
 ];
 
 async function generateFiles() {
@@ -43,7 +43,6 @@ async function generateFiles() {
       temperature: 0.2,
     });
 
-    // The new client returns content here:
     const code = response.choices[0].message.content;
     await fs.writeFile(outPath, code.trim(), 'utf8');
     console.log(`✅ Wrote ${file.filepath}`);
