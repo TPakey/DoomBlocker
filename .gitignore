@@ -1,0 +1,9 @@
+# Ignore any node_modules folder
+node_modules/
+Scripts/node_modules/
+
+# Ignore any package lock or json at repo root
+/package-lock.json
+/package.json
+
+# (Keep Scripts/package.json since that’s your generator project)
