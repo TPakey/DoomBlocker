@@ -1,17 +1,16 @@
 require('dotenv').config();
 const fs = require('fs-extra');
 const path = require('path');
-const { Configuration, OpenAIApi } = require('openai');
+const { OpenAI } = require('openai');
 
 if (!process.env.OPENAI_API_KEY) {
   console.error('🔑 Please set OPENAI_API_KEY in your .env');
   process.exit(1);
 }
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 const filesToGenerate = [
   {
@@ -34,15 +33,18 @@ async function generateFiles() {
     await fs.ensureDir(path.dirname(outPath));
 
     console.log(`⏳ Generating ${file.filepath}…`);
-    const response = await openai.createCompletion({
-      model: 'code-davinci-002',
-      prompt: file.prompt.trim(),
-      max_tokens: 1024,
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: 'You are a helpful assistant that writes Swift code.' },
+        { role: 'user', content: file.prompt.trim() }
+      ],
+      max_tokens: 1200,
       temperature: 0.2,
-      stop: ['```']
     });
 
-    const code = response.data.choices[0].text;
+    // The new client returns content here:
+    const code = response.choices[0].message.content;
     await fs.writeFile(outPath, code.trim(), 'utf8');
     console.log(`✅ Wrote ${file.filepath}`);
   }
